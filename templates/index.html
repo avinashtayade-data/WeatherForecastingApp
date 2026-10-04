@@ -3,31 +3,33 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecasting Application</title>
 
-    <title>Weather Forecasting App</title>
-
-    <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
 
-    <!-- Our CSS -->
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
 </head>
 
 <body>
 
+<div class="page-wrapper">
+
     <div class="container">
 
-        <!-- Header -->
-        <header>
+        <!-- HEADER -->
 
+        <header>
             <div>
                 <p class="small-title">WEATHER DASHBOARD</p>
 
@@ -37,11 +39,11 @@
                     Get accurate weather information for any city
                 </p>
             </div>
-
         </header>
 
 
-        <!-- Search section -->
+        <!-- SEARCH -->
+
         <section class="search-section">
 
             <input
@@ -57,33 +59,33 @@
         </section>
 
 
-        <!-- Error message -->
+        <!-- ERROR -->
+
         <div id="errorMessage"></div>
 
 
-        <!-- Loading -->
+        <!-- LOADING -->
+
         <div id="loading">
             Loading weather data...
         </div>
 
 
-        <!-- Weather Dashboard -->
+        <!-- WEATHER DASHBOARD -->
+
         <main id="weatherDashboard">
 
-            <!-- Current Weather -->
+            <!-- CURRENT WEATHER -->
+
             <section class="current-weather">
 
                 <div class="location">
 
                     <p>Current Weather</p>
 
-                    <h2 id="cityName">
-                        Pune
-                    </h2>
+                    <h2 id="cityName">--</h2>
 
-                    <span id="country">
-                        India
-                    </span>
+                    <span id="country">--</span>
 
                 </div>
 
@@ -97,13 +99,15 @@
                     >
 
                     <div>
+
                         <span id="temperature">
-                            --°
+                            --°C
                         </span>
 
                         <p id="condition">
                             --
                         </p>
+
                     </div>
 
                 </div>
@@ -111,7 +115,48 @@
             </section>
 
 
-            <!-- Weather Cards -->
+            <!-- SUNRISE / SUNSET -->
+
+            <section class="sun-section">
+
+                <div class="sun-card">
+
+                    <div class="sun-icon">
+                        🌅
+                    </div>
+
+                    <div>
+                        <p>Sunrise</p>
+
+                        <h3 id="sunrise">
+                            --:--
+                        </h3>
+                    </div>
+
+                </div>
+
+
+                <div class="sun-card">
+
+                    <div class="sun-icon">
+                        🌇
+                    </div>
+
+                    <div>
+                        <p>Sunset</p>
+
+                        <h3 id="sunset">
+                            --:--
+                        </h3>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- WEATHER DETAILS -->
+
             <section class="weather-details">
 
                 <div class="weather-card">
@@ -121,8 +166,13 @@
                     </div>
 
                     <div>
+
                         <p>Feels Like</p>
-                        <h3 id="feelsLike">--°C</h3>
+
+                        <h3 id="feelsLike">
+                            --°C
+                        </h3>
+
                     </div>
 
                 </div>
@@ -135,8 +185,13 @@
                     </div>
 
                     <div>
+
                         <p>Humidity</p>
-                        <h3 id="humidity">--%</h3>
+
+                        <h3 id="humidity">
+                            --%
+                        </h3>
+
                     </div>
 
                 </div>
@@ -149,8 +204,13 @@
                     </div>
 
                     <div>
+
                         <p>Wind Speed</p>
-                        <h3 id="windSpeed">-- m/s</h3>
+
+                        <h3 id="windSpeed">
+                            -- m/s
+                        </h3>
+
                     </div>
 
                 </div>
@@ -163,8 +223,13 @@
                     </div>
 
                     <div>
+
                         <p>Condition</p>
-                        <h3 id="weatherCondition">--</h3>
+
+                        <h3 id="weatherCondition">
+                            --
+                        </h3>
+
                     </div>
 
                 </div>
@@ -172,44 +237,235 @@
             </section>
 
 
-            <!-- Temperature Chart -->
+            <!-- AIR QUALITY -->
+
+            <section class="air-quality-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <p class="small-title">
+                            ENVIRONMENT
+                        </p>
+
+                        <h2>
+                            Air Quality
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="air-quality-content">
+
+                    <div class="aqi-main">
+
+                        <span class="aqi-number" id="aqiValue">
+                            --
+                        </span>
+
+                        <span class="aqi-label" id="aqiLabel">
+                            --
+                        </span>
+
+                    </div>
+
+
+                    <div class="pollutants">
+
+                        <div>
+                            <span>PM2.5</span>
+                            <strong id="pm25">--</strong>
+                        </div>
+
+                        <div>
+                            <span>PM10</span>
+                            <strong id="pm10">--</strong>
+                        </div>
+
+                        <div>
+                            <span>O₃</span>
+                            <strong id="ozone">--</strong>
+                        </div>
+
+                        <div>
+                            <span>NO₂</span>
+                            <strong id="no2">--</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ALLERGY OUTLOOK -->
+
+            <section class="allergy-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <p class="small-title">
+                            HEALTH OUTLOOK
+                        </p>
+
+                        <h2>
+                            Allergy Outlook
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="allergy-container">
+
+                    <div class="allergy-card">
+
+                        <span>
+                            🌱 Grass
+                        </span>
+
+                        <strong id="grassPollen">
+                            --
+                        </strong>
+
+                    </div>
+
+
+                    <div class="allergy-card">
+
+                        <span>
+                            🌳 Birch
+                        </span>
+
+                        <strong id="birchPollen">
+                            --
+                        </strong>
+
+                    </div>
+
+
+                    <div class="allergy-card">
+
+                        <span>
+                            🌿 Ragweed
+                        </span>
+
+                        <strong id="ragweedPollen">
+                            --
+                        </strong>
+
+                    </div>
+
+
+                    <div class="allergy-card">
+
+                        <span>
+                            🤧 Risk
+                        </span>
+
+                        <strong id="allergyRisk">
+                            --
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- HOURLY WEATHER -->
+
+            <section class="hourly-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <p class="small-title">
+                            HOURLY FORECAST
+                        </p>
+
+                        <h2>
+                            Hourly Weather
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="hourlyContainer"
+                    class="hourly-container"
+                >
+                </div>
+
+            </section>
+
+
+            <!-- TEMPERATURE CHART -->
+
             <section class="chart-section">
 
                 <div class="section-heading">
 
                     <div>
+
                         <p class="small-title">
                             TEMPERATURE TREND
                         </p>
 
-                        <h2>5 Day Forecast</h2>
+                        <h2>
+                            Temperature Forecast
+                        </h2>
+
                     </div>
 
                 </div>
 
-                <canvas id="temperatureChart"></canvas>
+
+                <div class="chart-container">
+
+                    <canvas id="temperatureChart"></canvas>
+
+                </div>
 
             </section>
 
 
-            <!-- Forecast -->
+            <!-- FIVE DAY FORECAST -->
+
             <section class="forecast-section">
 
                 <div class="section-heading">
 
                     <div>
+
                         <p class="small-title">
                             WEATHER OUTLOOK
                         </p>
 
-                        <h2>Forecast</h2>
+                        <h2>
+                            5 Day Forecast
+                        </h2>
+
                     </div>
 
                 </div>
 
 
-                <div id="forecastContainer"
-                     class="forecast-container">
+                <div
+                    id="forecastContainer"
+                    class="forecast-container"
+                >
                 </div>
 
             </section>
@@ -219,11 +475,28 @@
     </div>
 
 
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FOOTER -->
 
-    <!-- Our JavaScript -->
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <footer class="footer">
+
+        <p>
+            Weather Forecasting Application
+        </p>
+
+        <span>
+            Developed by Avinash Tayade | College Mini Project | 2026
+        </span>
+
+    </footer>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script
+    src="{{ url_for('static', filename='script.js') }}">
+</script>
 
 </body>
 

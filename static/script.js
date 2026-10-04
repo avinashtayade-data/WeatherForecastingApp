@@ -1,55 +1,52 @@
-// Get HTML elements
-
 const cityInput = document.getElementById("cityInput");
-
 const searchBtn = document.getElementById("searchBtn");
 
-const loading = document.getElementById("loading");
-
 const errorMessage = document.getElementById("errorMessage");
+const loading = document.getElementById("loading");
+const weatherDashboard = document.getElementById("weatherDashboard");
 
-const weatherDashboard =
-    document.getElementById("weatherDashboard");
+const cityName = document.getElementById("cityName");
+const country = document.getElementById("country");
 
-const cityName =
-    document.getElementById("cityName");
+const weatherIcon = document.getElementById("weatherIcon");
+const temperature = document.getElementById("temperature");
+const condition = document.getElementById("condition");
 
-const country =
-    document.getElementById("country");
+const feelsLike = document.getElementById("feelsLike");
+const humidity = document.getElementById("humidity");
+const windSpeed = document.getElementById("windSpeed");
+const weatherCondition = document.getElementById("weatherCondition");
 
-const temperature =
-    document.getElementById("temperature");
+const sunrise = document.getElementById("sunrise");
+const sunset = document.getElementById("sunset");
 
-const weatherIcon =
-    document.getElementById("weatherIcon");
+const aqiValue = document.getElementById("aqiValue");
+const aqiLabel = document.getElementById("aqiLabel");
 
-const condition =
-    document.getElementById("condition");
+const pm25 = document.getElementById("pm25");
+const pm10 = document.getElementById("pm10");
+const ozone = document.getElementById("ozone");
+const no2 = document.getElementById("no2");
 
-const feelsLike =
-    document.getElementById("feelsLike");
-
-const humidity =
-    document.getElementById("humidity");
-
-const windSpeed =
-    document.getElementById("windSpeed");
-
-const weatherCondition =
-    document.getElementById("weatherCondition");
+const grassPollen = document.getElementById("grassPollen");
+const birchPollen = document.getElementById("birchPollen");
+const ragweedPollen = document.getElementById("ragweedPollen");
+const allergyRisk = document.getElementById("allergyRisk");
 
 const forecastContainer =
     document.getElementById("forecastContainer");
 
-
-// Store chart object
+const hourlyContainer =
+    document.getElementById("hourlyContainer");
 
 let temperatureChart = null;
 
 
-// Search button
+// --------------------------------
+// SEARCH BUTTON
+// --------------------------------
 
-searchBtn.addEventListener("click", function () {
+searchBtn.addEventListener("click", () => {
 
     const city = cityInput.value.trim();
 
@@ -64,9 +61,11 @@ searchBtn.addEventListener("click", function () {
 });
 
 
-// Allow Enter key
+// --------------------------------
+// ENTER KEY
+// --------------------------------
 
-cityInput.addEventListener("keydown", function (event) {
+cityInput.addEventListener("keypress", (event) => {
 
     if (event.key === "Enter") {
 
@@ -76,159 +75,372 @@ cityInput.addEventListener("keydown", function (event) {
 });
 
 
-// Get weather data from Flask
+// --------------------------------
+// GET WEATHER
+// --------------------------------
 
 async function getWeather(city) {
 
+    errorMessage.style.display = "none";
+
+    loading.style.display = "block";
+
+    weatherDashboard.style.display = "none";
+
+
     try {
 
-        // Show loading
-
-        loading.style.display = "block";
-
-        errorMessage.textContent = "";
-
-        weatherDashboard.style.display = "none";
-
-
-        // Send request to Flask
-
-        const response =
-            await fetch(
-                `/weather?city=${encodeURIComponent(city)}`
-            );
+        const response = await fetch(
+            `/weather?city=${encodeURIComponent(city)}`
+        );
 
 
         const data = await response.json();
 
 
-        // Check for errors
-
         if (!response.ok) {
 
             throw new Error(
                 data.error ||
-                "Something went wrong."
+                "Unable to get weather data."
             );
+
         }
 
 
-        // Display weather
+        displayCurrentWeather(
+            data.current
+        );
 
-        displayCurrentWeather(data.current);
 
-        displayForecast(data.forecast);
+        displayAirQuality(
+            data.air_quality
+        );
 
-        createTemperatureChart(data.forecast);
 
+        displayAllergy(
+            data.allergy
+        );
+
+
+        displayHourlyWeather(
+            data.forecast
+        );
+
+
+        displayForecast(
+            data.forecast
+        );
+
+
+        displayTemperatureChart(
+            data.forecast
+        );
+
+
+        loading.style.display = "none";
 
         weatherDashboard.style.display = "block";
 
     }
 
+
     catch (error) {
+
+        loading.style.display = "none";
 
         showError(error.message);
 
     }
 
-    finally {
-
-        loading.style.display = "none";
-    }
-
 }
 
 
-// Display current weather
+// --------------------------------
+// CURRENT WEATHER
+// --------------------------------
 
-function displayCurrentWeather(data) {
+function displayCurrentWeather(weather) {
 
-    cityName.textContent = data.city;
+    cityName.textContent =
+        weather.city;
 
-    country.textContent = data.country;
+    country.textContent =
+        weather.country;
+
 
     temperature.textContent =
-        `${data.temperature}°C`;
+        `${weather.temperature}°C`;
+
 
     condition.textContent =
-        data.description;
+        weather.description;
+
 
     feelsLike.textContent =
-        `${data.feels_like}°C`;
+        `${weather.feels_like}°C`;
+
 
     humidity.textContent =
-        `${data.humidity}%`;
+        `${weather.humidity}%`;
+
 
     windSpeed.textContent =
-        `${data.wind_speed} m/s`;
+        `${weather.wind_speed} m/s`;
+
 
     weatherCondition.textContent =
-        data.condition;
+        weather.condition;
 
-
-    // OpenWeatherMap weather icon
 
     weatherIcon.src =
-        `https://openweathermap.org/img/wn/${data.icon}@2x.png`;
+        `https://openweathermap.org/img/wn/${weather.icon}@2x.png`;
+
 
     weatherIcon.alt =
-        data.description;
+        weather.description;
+
+
+    // Sunrise
+
+    sunrise.textContent =
+        formatTime(weather.sunrise);
+
+
+    // Sunset
+
+    sunset.textContent =
+        formatTime(weather.sunset);
+
 }
 
 
-// Display forecast
+// --------------------------------
+// FORMAT TIME
+// --------------------------------
+
+function formatTime(timestamp) {
+
+    if (!timestamp) {
+        return "--:--";
+    }
+
+
+    const date =
+        new Date(timestamp * 1000);
+
+
+    return date.toLocaleTimeString(
+        "en-US",
+        {
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    );
+
+}
+
+
+// --------------------------------
+// AIR QUALITY
+// --------------------------------
+
+function displayAirQuality(data) {
+
+    if (!data) {
+        return;
+    }
+
+
+    aqiValue.textContent =
+        data.aqi ?? "--";
+
+
+    aqiLabel.textContent =
+        data.label || "Unavailable";
+
+
+    pm25.textContent =
+        data.pm25 !== null
+            ? `${data.pm25} μg/m³`
+            : "--";
+
+
+    pm10.textContent =
+        data.pm10 !== null
+            ? `${data.pm10} μg/m³`
+            : "--";
+
+
+    ozone.textContent =
+        data.ozone !== null
+            ? `${data.ozone} μg/m³`
+            : "--";
+
+
+    no2.textContent =
+        data.no2 !== null
+            ? `${data.no2} μg/m³`
+            : "--";
+
+}
+
+
+// --------------------------------
+// ALLERGY OUTLOOK
+// --------------------------------
+
+function displayAllergy(data) {
+
+    if (!data) {
+        return;
+    }
+
+
+    grassPollen.textContent =
+        data.grass !== null
+            ? `${data.grass} grains/m³`
+            : "Unavailable";
+
+
+    birchPollen.textContent =
+        data.birch !== null
+            ? `${data.birch} grains/m³`
+            : "Unavailable";
+
+
+    ragweedPollen.textContent =
+        data.ragweed !== null
+            ? `${data.ragweed} grains/m³`
+            : "Unavailable";
+
+
+    allergyRisk.textContent =
+        data.risk || "Unavailable";
+
+}
+
+
+// --------------------------------
+// HOURLY WEATHER
+// --------------------------------
+
+function displayHourlyWeather(forecast) {
+
+    hourlyContainer.innerHTML = "";
+
+
+    const hourlyData =
+        forecast.slice(0, 8);
+
+
+    hourlyData.forEach(item => {
+
+        const date =
+            new Date(item.datetime);
+
+
+        const time =
+            date.toLocaleTimeString(
+                "en-US",
+                {
+                    hour: "numeric"
+                }
+            );
+
+
+        const card =
+            document.createElement("div");
+
+
+        card.className =
+            "hourly-card";
+
+
+        card.innerHTML = `
+
+            <p class="hourly-time">
+                ${time}
+            </p>
+
+            <img
+                src="https://openweathermap.org/img/wn/${item.icon}@2x.png"
+                alt="${item.description}"
+            >
+
+            <h3>
+                ${item.temperature}°C
+            </h3>
+
+            <p>
+                ${item.condition}
+            </p>
+
+            <span>
+                💧 ${item.humidity}%
+            </span>
+
+        `;
+
+
+        hourlyContainer.appendChild(card);
+
+    });
+
+}
+
+
+// --------------------------------
+// FIVE DAY FORECAST
+// --------------------------------
 
 function displayForecast(forecast) {
 
     forecastContainer.innerHTML = "";
 
 
-    /*
-        OpenWeatherMap gives data
-        every 3 hours.
-
-        We select one forecast
-        approximately every day.
-    */
-
-    const dailyForecast = [];
-
-    const datesUsed = new Set();
+    const dailyForecast = {};
 
 
-    for (const item of forecast) {
+    forecast.forEach(item => {
 
         const date =
             item.datetime.split(" ")[0];
 
 
-        if (!datesUsed.has(date)) {
+        if (!dailyForecast[date]) {
 
-            datesUsed.add(date);
+            dailyForecast[date] = item;
 
-            dailyForecast.push(item);
         }
 
-
-        if (dailyForecast.length === 5) {
-
-            break;
-        }
-    }
+    });
 
 
-    dailyForecast.forEach(function (item) {
+    const days =
+        Object.values(dailyForecast)
+            .slice(0, 5);
+
+
+    days.forEach(item => {
 
         const date =
             new Date(item.datetime);
 
 
-        const formattedDate =
+        const dayName =
             date.toLocaleDateString(
-                "en-IN",
+                "en-US",
                 {
-                    weekday: "short",
+                    weekday: "short"
+                }
+            );
+
+
+        const dateText =
+            date.toLocaleDateString(
+                "en-US",
+                {
                     day: "numeric",
                     month: "short"
                 }
@@ -239,13 +451,18 @@ function displayForecast(forecast) {
             document.createElement("div");
 
 
-        card.classList.add("forecast-card");
+        card.className =
+            "forecast-card";
 
 
         card.innerHTML = `
 
+            <h3>
+                ${dayName}
+            </h3>
+
             <p class="forecast-date">
-                ${formattedDate}
+                ${dateText}
             </p>
 
             <img
@@ -253,12 +470,16 @@ function displayForecast(forecast) {
                 alt="${item.description}"
             >
 
-            <p class="forecast-temp">
+            <h2>
                 ${item.temperature}°C
+            </h2>
+
+            <p>
+                ${item.condition}
             </p>
 
-            <p class="forecast-condition">
-                ${item.description}
+            <p class="forecast-humidity">
+                💧 ${item.humidity}%
             </p>
 
         `;
@@ -267,33 +488,29 @@ function displayForecast(forecast) {
         forecastContainer.appendChild(card);
 
     });
+
 }
 
 
-// Create temperature chart
+// --------------------------------
+// TEMPERATURE CHART
+// --------------------------------
 
-function createTemperatureChart(forecast) {
-
-    const ctx =
-        document.getElementById(
-            "temperatureChart"
-        );
-
-
-    // Take first 10 forecast points
+function displayTemperatureChart(forecast) {
 
     const chartData =
         forecast.slice(0, 10);
 
 
     const labels =
-        chartData.map(function (item) {
+        chartData.map(item => {
 
             const date =
                 new Date(item.datetime);
 
+
             return date.toLocaleTimeString(
-                "en-IN",
+                "en-US",
                 {
                     hour: "2-digit",
                     minute: "2-digit"
@@ -304,22 +521,23 @@ function createTemperatureChart(forecast) {
 
 
     const temperatures =
-        chartData.map(function (item) {
-
-            return item.temperature;
-
-        });
+        chartData.map(
+            item => item.temperature
+        );
 
 
-    // Delete previous chart
+    const ctx =
+        document
+            .getElementById("temperatureChart")
+            .getContext("2d");
+
 
     if (temperatureChart) {
 
         temperatureChart.destroy();
+
     }
 
-
-    // Create new chart
 
     temperatureChart =
         new Chart(ctx, {
@@ -330,21 +548,27 @@ function createTemperatureChart(forecast) {
 
                 labels: labels,
 
-                datasets: [{
+                datasets: [
 
-                    label: "Temperature °C",
+                    {
 
-                    data: temperatures,
+                        label:
+                            "Temperature °C",
 
-                    borderWidth: 3,
+                        data:
+                            temperatures,
 
-                    tension: 0.4,
+                        borderWidth: 3,
 
-                    fill: false,
+                        tension: 0.4,
 
-                    pointRadius: 5
+                        fill: false,
 
-                }]
+                        pointRadius: 4
+
+                    }
+
+                ]
 
             },
 
@@ -352,17 +576,13 @@ function createTemperatureChart(forecast) {
 
                 responsive: true,
 
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
 
                 plugins: {
 
                     legend: {
 
-                        labels: {
-
-                            color: "white"
-
-                        }
+                        display: true
 
                     }
 
@@ -370,37 +590,9 @@ function createTemperatureChart(forecast) {
 
                 scales: {
 
-                    x: {
-
-                        ticks: {
-
-                            color: "white"
-
-                        },
-
-                        grid: {
-
-                            color:
-                                "rgba(255,255,255,0.1)"
-
-                        }
-
-                    },
-
                     y: {
 
-                        ticks: {
-
-                            color: "white"
-
-                        },
-
-                        grid: {
-
-                            color:
-                                "rgba(255,255,255,0.1)"
-
-                        }
+                        beginAtZero: false
 
                     }
 
@@ -413,16 +605,19 @@ function createTemperatureChart(forecast) {
 }
 
 
-// Display error
+// --------------------------------
+// ERROR
+// --------------------------------
 
 function showError(message) {
 
-    errorMessage.textContent = message;
+    errorMessage.textContent =
+        message;
 
-    weatherDashboard.style.display = "none";
+    errorMessage.style.display =
+        "block";
+
+    weatherDashboard.style.display =
+        "none";
+
 }
-
-
-// Load default city
-
-getWeather("Pune");
