@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Weather Forecasting App</title>
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <!-- Our CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- Header -->
+        <header>
+
+            <div>
+                <p class="small-title">WEATHER DASHBOARD</p>
+
+                <h1>Weather Forecast</h1>
+
+                <p class="subtitle">
+                    Get accurate weather information for any city
+                </p>
+            </div>
+
+        </header>
+
+
+        <!-- Search section -->
+        <section class="search-section">
+
+            <input
+                type="text"
+                id="cityInput"
+                placeholder="Enter city name..."
+            >
+
+            <button id="searchBtn">
+                Search
+            </button>
+
+        </section>
+
+
+        <!-- Error message -->
+        <div id="errorMessage"></div>
+
+
+        <!-- Loading -->
+        <div id="loading">
+            Loading weather data...
+        </div>
+
+
+        <!-- Weather Dashboard -->
+        <main id="weatherDashboard">
+
+            <!-- Current Weather -->
+            <section class="current-weather">
+
+                <div class="location">
+
+                    <p>Current Weather</p>
+
+                    <h2 id="cityName">
+                        Pune
+                    </h2>
+
+                    <span id="country">
+                        India
+                    </span>
+
+                </div>
+
+
+                <div class="temperature">
+
+                    <img
+                        id="weatherIcon"
+                        src=""
+                        alt="Weather icon"
+                    >
+
+                    <div>
+                        <span id="temperature">
+                            --°
+                        </span>
+
+                        <p id="condition">
+                            --
+                        </p>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Weather Cards -->
+            <section class="weather-details">
+
+                <div class="weather-card">
+
+                    <div class="card-icon">
+                        🌡️
+                    </div>
+
+                    <div>
+                        <p>Feels Like</p>
+                        <h3 id="feelsLike">--°C</h3>
+                    </div>
+
+                </div>
+
+
+                <div class="weather-card">
+
+                    <div class="card-icon">
+                        💧
+                    </div>
+
+                    <div>
+                        <p>Humidity</p>
+                        <h3 id="humidity">--%</h3>
+                    </div>
+
+                </div>
+
+
+                <div class="weather-card">
+
+                    <div class="card-icon">
+                        💨
+                    </div>
+
+                    <div>
+                        <p>Wind Speed</p>
+                        <h3 id="windSpeed">-- m/s</h3>
+                    </div>
+
+                </div>
+
+
+                <div class="weather-card">
+
+                    <div class="card-icon">
+                        ☁️
+                    </div>
+
+                    <div>
+                        <p>Condition</p>
+                        <h3 id="weatherCondition">--</h3>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Temperature Chart -->
+            <section class="chart-section">
+
+                <div class="section-heading">
+
+                    <div>
+                        <p class="small-title">
+                            TEMPERATURE TREND
+                        </p>
+
+                        <h2>5 Day Forecast</h2>
+                    </div>
+
+                </div>
+
+                <canvas id="temperatureChart"></canvas>
+
+            </section>
+
+
+            <!-- Forecast -->
+            <section class="forecast-section">
+
+                <div class="section-heading">
+
+                    <div>
+                        <p class="small-title">
+                            WEATHER OUTLOOK
+                        </p>
+
+                        <h2>Forecast</h2>
+                    </div>
+
+                </div>
+
+
+                <div id="forecastContainer"
+                     class="forecast-container">
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Our JavaScript -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+
+</html>
